@@ -1,5 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views.generic import TemplateView
+
+from store.models import Perfume, User
+from store.forms import UserForm, LoginForm
 
 # Create your views here.
 
@@ -9,17 +12,37 @@ class HomePageView(TemplateView):
 class LoginPageView(TemplateView):
     template_name = 'login.html'
 
+    def get(self, request):
+        form = LoginForm()
+        return render(request, self.template_name, {'form': form})
+
 class SingUpPageView(TemplateView):
     template_name = 'singup.html'
+
+    def get(self, request):
+        form = UserForm()
+        return render(request, self.template_name, {'form': form})
 
 class ProfilePageView(TemplateView):
     template_name = 'user.html'
 
+    def get(self, request, pk):
+        user = get_object_or_404(User, pk=pk)
+        return render(request, self.template_name, {'user': user})
+
 class PerfumesPageView(TemplateView):
     template_name = 'perfumes.html'
 
+    def get(self, request):
+        perfumes = Perfume.objects.all()
+        return render(request, self.template_name, {'perfumes': perfumes})
+
 class PerfumesDetailsPageView(TemplateView):
     template_name = 'perfumesdetails.html'
+
+    def get(self, request, pk):
+        perfume = get_object_or_404(Perfume, pk=pk)
+        return render(request, self.template_name, {'perfume': perfume})
 
 class CartPageView(TemplateView):
     template_name = 'cart.html'

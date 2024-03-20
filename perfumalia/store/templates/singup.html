@@ -4,7 +4,11 @@
 {% block content %} 
 
 <div class="text-center"> 
-  Esta es la página: Sing-up
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Registrarse</button>
+  </form>
 </div> 
 
 {% endblock %} 
