@@ -4,7 +4,15 @@
 {% block content %} 
 
 <div class="text-center"> 
-  Esta es la página: subscription
+  <h1>Lista subscripciones</h1>
+        <ul>
+            {% for sub in subscriptions %}
+                <li>(ID:{{ sub.subscriptionID }}) - Type: {{ sub.subscriptionType }} </li>
+            {% endfor %}
+        </ul>
+        <a href="/">
+            <button>Regresar</button>
+        </a>
 </div> 
 
 {% endblock %} 
