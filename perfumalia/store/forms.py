@@ -1,5 +1,5 @@
 from django import forms
-from .models import User
+from .models import User, perfume
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -28,10 +28,26 @@ class UserRegistrationForm(forms.ModelForm):
         if commit:
             user.save()
         return user
-    
-
 
 
 class UserLoginForm(AuthenticationForm):
     username = forms.CharField(label='Nombre de Usuario', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Contraseña', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+
+class PerfumeForm(forms.ModelForm):
+    class Meta:
+        model = Perfume
+        fields = '__all__'
+
+    def clean_price(self):
+        price = self.cleaned_data['price']
+        if price < 0:
+            raise forms.ValidationError("El precio no puede ser negativo.")
+        return price
+
+    def clean_inventory_quantity(self):
+        inventory_quantity = self.cleaned_data['inventory_quantity']
+        if inventory_quantity < 0:
+            raise forms.ValidationError("La cantidad en inventario no puede ser negativa.")
+        return inventory_quantity
