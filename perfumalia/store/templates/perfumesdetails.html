@@ -4,7 +4,18 @@
 {% block content %} 
 
 <div class="text-center"> 
-  Esta es la página: Details
+  <h1>{{ perfume.name }} Details</h1>
+        <ul>
+            <li><strong>Author:</strong> {{ perfume.author }}</li>
+            <li><strong>Brand:</strong> {{ perfume.brand }}</li>
+            <li><strong>Category:</strong> {{ perfume.category }}</li>
+            <li><strong>Price:</strong> {{ perfume.price }}</li>
+            <li><strong>Inventory Quantity:</strong> {{ perfume.inventoryQuantity }}</li>
+            <li><strong>Details:</strong> {{ perfume.details }}</li>
+        </ul>
+        <a href="/perfumes">
+            <button>Regresar</button>
+        </a>
 </div> 
 
 {% endblock %} 
