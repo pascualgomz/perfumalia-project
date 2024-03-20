@@ -4,7 +4,15 @@
 {% block content %} 
 
 <div class="text-center"> 
-  Esta es la página: Orders
+  <h1>Lista Ordenes</h1>
+        <ul>
+            {% for order in orders %}
+                <li>(ID:{{ order.orderID }}) - Date: {{ order.orderDate }} <a href="{% url 'orderdetails' order.orderID %}"><button>Detalles</button></a></li>
+            {% endfor %}
+        </ul>
+        <a href="/">
+            <button>Regresar</button>
+        </a>
 </div> 
 
 {% endblock %} 

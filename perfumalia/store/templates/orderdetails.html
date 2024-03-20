@@ -4,7 +4,16 @@
 {% block content %} 
 
 <div class="text-center"> 
-  Esta es la página: Order Details
+    <ul>
+      <li><strong>OrderID:</strong> {{ order.orderID }}</li>
+      <li><strong>Items:</strong> {{ order.orderItems }}</li>
+      <li><strong>UserID:</strong> {{ order.userID }}</li>
+      <li><strong>Status:</strong> {{ order.orderStatus }}</li>
+      <li><strong>Date:</strong> {{ order.orderDate }}</li>
+  </ul>
+  <a href="/order">
+      <button>Regresar</button>
+  </a>
 </div> 
 
 {% endblock %} 

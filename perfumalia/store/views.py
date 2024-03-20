@@ -3,7 +3,7 @@ from .forms import UserRegistrationForm, UserLoginForm
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-from store.models import Perfume, User
+from store.models import Order, Perfume, ShoppingCart, Subscription, User
 
 def register(request):
     if request.method == 'POST':
@@ -28,9 +28,9 @@ class HomePageView(TemplateView):
 class ProfilePageView(TemplateView):
     template_name = 'user.html'
 
-    def get(self, request, pk):
-        user = get_object_or_404(User, pk=pk)
-        return render(request, self.template_name, {'user': user})
+    def get(self, request):
+        users = User.objects.all()
+        return render(request, self.template_name, {'users': users})
 
 class PerfumesPageView(TemplateView):
     template_name = 'perfumes.html'
@@ -49,14 +49,23 @@ class PerfumesDetailsPageView(TemplateView):
 class CartPageView(TemplateView):
     template_name = 'cart.html'
 
+    def get(self, request):
+        carts = ShoppingCart.objects.all()
+        return render(request, self.template_name, {'carts': carts})
+
 class OrdersPageView(TemplateView):
     template_name = 'orders.html'
+
+    def get(self, request):
+        orders = Order.objects.all()
+        return render(request, self.template_name, {'orders': orders})
 
 class OrderDetailsPageView(TemplateView):
     template_name = 'orderdetails.html'
 
-class PaymentPageView(TemplateView):
-    template_name = 'payment.html'
+    def get(self, request, pk):
+        order = get_object_or_404(Order, pk=pk)
+        return render(request, self.template_name, {'order': order})
 
 class SearchResultsPageView(TemplateView):
     template_name = 'searchresults.html'
@@ -67,6 +76,10 @@ class SearchResultsPageView(TemplateView):
 
 class SubscriptionPageView(TemplateView):
     template_name = 'subscription.html'
+
+    def get(self, request):
+        subscriptions = Subscription.objects.all()
+        return render(request, self.template_name, {'subscriptions': subscriptions})
 
 def index(request):
     return render(request, 'index.html')
