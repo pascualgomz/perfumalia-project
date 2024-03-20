@@ -61,6 +61,10 @@ class PaymentPageView(TemplateView):
 class SearchResultsPageView(TemplateView):
     template_name = 'searchresults.html'
 
+    def get(self, request, query):
+        resultados = Perfume.objects.filter(name__icontains=query)
+        return render(request, self.template_name, {'perfumes': resultados})
+
 class SubscriptionPageView(TemplateView):
     template_name = 'subscription.html'
 
