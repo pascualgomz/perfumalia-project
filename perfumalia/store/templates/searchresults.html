@@ -4,7 +4,15 @@
 {% block content %} 
 
 <div class="text-center"> 
-  Esta es la página: search
+  <h1>Lista Perfumes</h1>
+        <ul>
+            {% for perfume in perfumes %}
+                <li>(ID:{{ perfume.productID }}) {{ perfume.name }} <a href="{% url 'perfumedetails' perfume.productID %}"><button>Detalles</button></a></li>
+            {% endfor %}
+        </ul>
+        <a href="/">
+            <button>Regresar</button>
+        </a>
 </div> 
 
 {% endblock %} 
