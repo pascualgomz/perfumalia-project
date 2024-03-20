@@ -1,27 +1,29 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import UserRegistrationForm, UserLoginForm
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView
-
 from store.models import Perfume, User
-from store.forms import UserForm, LoginForm
 
-# Create your views here.
+def register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/login')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'registration/register.html', {'form': form})
+
+class UserLoginView(LoginView):
+    authentication_form = UserLoginForm
+    template_name = 'user/login.html'  
+    next_page = reverse_lazy('/')
+    redirect_authenticated_user = True 
 
 class HomePageView(TemplateView):
     template_name = 'home.html'
 
-class LoginPageView(TemplateView):
-    template_name = 'login.html'
-
-    def get(self, request):
-        form = LoginForm()
-        return render(request, self.template_name, {'form': form})
-
-class SingUpPageView(TemplateView):
-    template_name = 'singup.html'
-
-    def get(self, request):
-        form = UserForm()
-        return render(request, self.template_name, {'form': form})
 
 class ProfilePageView(TemplateView):
     template_name = 'user.html'
@@ -62,5 +64,5 @@ class SearchResultsPageView(TemplateView):
 class SubscriptionPageView(TemplateView):
     template_name = 'subscription.html'
 
-def admin_login(request):
-    return render(request, 'admin/login.html')
+def index(request):
+    return render(request, 'index.html')

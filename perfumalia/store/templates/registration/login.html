@@ -1,0 +1,15 @@
+<!-- login.html -->
+
+{% block content %}
+<h2>Iniciar sesión</h2>
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Login</button>
+  <p>¿No tienes una cuenta? <a href="{% url 'register' %}">Regístrate</a></p>
+  {% if form.errors %}
+    <div class="alert alert-danger">
+        Nombre de usuario o contraseña incorrectos.
+    </div>
+{% endif %}
+</form>
+{% endblock %}

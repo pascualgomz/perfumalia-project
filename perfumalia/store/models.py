@@ -1,11 +1,23 @@
 from django.db import models, transaction
+from django.contrib.auth.models import make_password
 
 class User(models.Model):
     userID = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100, unique=True)
     address = models.CharField(max_length=200)
     cellphoneNumber = models.CharField(max_length=20)
     dateOfBirth = models.DateField()
+    password = models.CharField(max_length=128) 
+
+
+    def save(self, *args, **kwargs):
+        # Esto asegurará que la contraseña se guarde hasheada
+        self.password = make_password(self.password)
+        super().save(*args, **kwargs)
+
+    USERNAME_FIELD = 'email'  
+    REQUIRED_FIELDS = ['email']  
 
 class Perfume(models.Model):
     productID = models.CharField(primary_key = True, max_length=100)
