@@ -19,14 +19,6 @@ class User(models.Model):
     USERNAME_FIELD = 'email'  
     REQUIRED_FIELDS = ['email']  
 
-class Order(models.Model):
-    orderID = models.AutoField(primary_key=True)
-    userID = models.ForeignKey(User, on_delete=models.CASCADE)
-    orderStatus = models.CharField(max_length=50)
-    shippingDetails = models.JSONField()
-    orderDate = models.DateField(auto_now_add=True)
-    orderHistory = models.JSONField()
-
 class Perfume(models.Model):
     productID = models.CharField(primary_key = True, max_length=100)
     name = models.CharField(max_length=100)
@@ -78,13 +70,19 @@ class Perfume(models.Model):
     #     self.details = new_details
     #     self.save()
 
+class Order(models.Model):
+    orderID = models.AutoField(primary_key=True)
+    orderItems = models.ManyToManyField(Perfume, through='OrderItem')
+    userID = models.ForeignKey(User, on_delete=models.CASCADE)
+    orderStatus = models.CharField(max_length=50)
+    orderDate = models.DateField(auto_now_add=True)
+
 class OrderItem(models.Model):
-    perfume = models.ForeignKey(Perfume, on_delete=models.CASCADE)
-    cantidad = models.IntegerField()
+    perfumeID = models.ForeignKey(Perfume, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
     orderID = models.ForeignKey(Order, on_delete=models.CASCADE)
+    totalPrice = models.IntegerField(null = True)
 
-
-    
 class ShoppingCart(models.Model):
     userID = models.OneToOneField(User, on_delete=models.CASCADE, primary_key = True)
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
@@ -148,8 +146,6 @@ class ShoppingCart(models.Model):
             # Devuelve el pedido para su posterior procesamiento
             return new_order
     
-
-
 class Recommendations(models.Model):
     userID = models.OneToOneField(User, on_delete=models.CASCADE, primary_key = True)
     purchaseHistory = models.JSONField(blank=True, default=list)
@@ -200,8 +196,6 @@ class Recommendations(models.Model):
         self.recommendationList = existing_recommendations
         self.save()
 
-
-
 class CartItem(models.Model):
     product = models.ForeignKey(Perfume, on_delete=models.CASCADE)
     shoppingCart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
@@ -229,3 +223,9 @@ class CartItem(models.Model):
         """Obtiene el precio total de un artículo."""
         return self.calcular_total()
     
+class Subscription(models.Model):
+    subscriptionID = models.AutoField(primary_key=True)
+    userID = models.ForeignKey(User, on_delete=models.CASCADE)
+    subscriptionStatus = models.CharField(max_length=50)
+    subscriptionType = models.CharField(max_length=100)
+    billingDate = models.DateField()
