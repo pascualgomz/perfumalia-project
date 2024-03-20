@@ -7,4 +7,20 @@
   Esta es la página: Home
 </div> 
 
+<form id="searchForm">
+  <input type="text" id="searchQuery" placeholder="Buscar...">
+  <button type="submit">Buscar</button>
+</form>
+
+<script>
+  document.getElementById("searchForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+      
+      var query = document.getElementById("searchQuery").value.trim(); // Obtener el valor de búsqueda
+      if (query !== "") {
+          window.location.href = "/search/" + encodeURIComponent(query) + "/"; // Redirigir a la URL de búsqueda
+      }
+  });
+</script>
+
 {% endblock %} 
