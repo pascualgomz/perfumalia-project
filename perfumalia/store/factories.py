@@ -18,7 +18,7 @@ class PerfumeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Perfume
 
-    productID = factory.Sequence(lambda n: f'perfume-{n}')
+    productID = factory.Sequence(lambda n: n)
     name = factory.Faker('word')
     author = factory.Faker('name')
     brand = factory.Faker('company')
