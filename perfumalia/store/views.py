@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from store.forms import UserForm
+from store.forms import UserForm, LoginForm
 
 # Create your views here.
 
@@ -10,6 +10,10 @@ class HomePageView(TemplateView):
 
 class LoginPageView(TemplateView):
     template_name = 'login.html'
+
+    def get(self, request):
+        form = LoginForm()
+        return render(request, self.template_name, {'form': form})
 
 class SingUpPageView(TemplateView):
     template_name = 'singup.html'

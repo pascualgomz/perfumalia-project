@@ -6,6 +6,11 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ['name', 'address', 'cellphoneNumber', 'dateOfBirth']
 
+class LoginForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['name']
+
 class PerfumeForm(forms.ModelForm):
     class Meta:
         model = Perfume
