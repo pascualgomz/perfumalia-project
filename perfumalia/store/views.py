@@ -5,6 +5,35 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from store.models import Order, Perfume, ShoppingCart, Subscription, User
 from django.contrib.auth import logout
+from django.views import View
+from .models import CartItem
+
+
+class AddToCartView(View):
+    def post(self, request, productID):
+        perfume = get_object_or_404(Perfume, productID=productID)
+        user = request.user
+        cart, created = ShoppingCart.objects.get_or_create(userID=user)
+        cart_item, created = CartItem.objects.get_or_create(product=perfume, shoppingCart=cart)
+        if not created:
+            cart_item.quantity += 1
+        else:
+            cart_item.quantity = 1  # Añadir esto para asegurar que quantity tenga un valor
+        cart_item.save()
+        cart.update_subtotal()
+        return redirect('perfumes')
+    
+    
+class RemoveFromCartView(View):
+    def post(self, request, productID):
+        perfume = get_object_or_404(Perfume, productID=productID)
+        user = request.user
+        cart = get_object_or_404(ShoppingCart, userID=user)
+        cart_item = get_object_or_404(CartItem, product=perfume, shoppingCart=cart)
+        cart_item.delete()
+        cart.update_subtotal()
+        return redirect('cart')
+
 
 def register(request):
     if request.method == 'POST':
@@ -59,8 +88,11 @@ class CartPageView(TemplateView):
     template_name = 'cart.html'
 
     def get(self, request):
-        carts = ShoppingCart.objects.all()
-        return render(request, self.template_name, {'carts': carts})
+        try:
+            cart = ShoppingCart.objects.get(userID=request.user)
+        except ShoppingCart.DoesNotExist:
+            cart = None
+        return render(request, self.template_name, {'carts': cart})
 
 class OrdersPageView(TemplateView):
     template_name = 'orders.html'

@@ -17,4 +17,6 @@ urlpatterns = [
     path("subscription", SubscriptionPageView.as_view(), name='subscription'),
     path('logout/', LogoutView, name='logout'),
     path('logout-success/', LogoutSuccessView, name='logout_success'),
+    path('add-to-cart/<str:productID>/', AddToCartView.as_view(), name='add_to_cart'),
+    path('remove-from-cart/<str:productID>/', RemoveFromCartView.as_view(), name='remove_from_cart'),
 ]

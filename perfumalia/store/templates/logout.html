@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Cierre de Sesión{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h2>Has cerrado sesión exitosamente</h2>
+    <p>Gracias por visitar Perfumalia. ¡Esperamos verte pronto!</p>
+    <a href="{% url 'home' %}" class="btn btn-primary mt-3">Volver a la Página Principal</a>
+</div>
+{% endblock %} 

@@ -86,7 +86,7 @@ class OrderItem(models.Model):
 
 class ShoppingCart(models.Model):
     userID = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key = True)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     savedForLater = models.JSONField(blank=True, default=list)
 
     def __str__(self):
@@ -200,7 +200,7 @@ class Recommendation(models.Model):
 class CartItem(models.Model):
     product = models.ForeignKey(Perfume, on_delete=models.CASCADE)
     shoppingCart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=1)
 
     def __str__(self):
         return str(self.product)

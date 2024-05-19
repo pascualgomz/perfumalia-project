@@ -1,18 +1,25 @@
 {% extends 'base.html' %} 
-{%  block title %} Perfumalia {% endblock %} 
+{% block title %} Perfumalia {% endblock %} 
 
 {% block content %} 
 
 <div class="text-center"> 
   <h1>Lista Perfumes</h1>
-        <ul>
-            {% for perfume in perfumes %}
-                <li>(ID:{{ perfume.productID }}) {{ perfume.name }} <a href="{% url 'perfumedetails' perfume.productID %}"><button>Detalles</button></a></li>
-            {% endfor %}
-        </ul>
-        <a href="/">
-            <button>Regresar</button>
-        </a>
+  <ul>
+      {% for perfume in perfumes %}
+          <li>
+              (ID:{{ perfume.productID }}) {{ perfume.name }} 
+              <a href="{% url 'perfumedetails' perfume.productID %}"><button>Detalles</button></a>
+              <form action="{% url 'add_to_cart' perfume.productID %}" method="POST" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit">Agregar al carrito</button>
+              </form>
+          </li>
+      {% endfor %}
+  </ul>
+  <a href="/">
+      <button>Regresar</button>
+  </a>
 </div> 
 
-{% endblock %} 
+{% endblock %}
