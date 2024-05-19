@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import ShoppingCart, User, Perfume, OrderItem, Order, CartItem, Recommendations
+from .models import ShoppingCart, User, Perfume, OrderItem, Order, CartItem, Recommendation
 from django.contrib.auth.models import User as AuthUser
 from decimal import Decimal
 
@@ -167,7 +167,7 @@ class RecommendationsTest(TestCase):
             inventoryQuantity=15,
             details='Another test perfume'
         )
-        self.recommendations = Recommendations.objects.create(
+        self.recommendations = Recommendation.objects.create(
             userID=self.user
         )
 
