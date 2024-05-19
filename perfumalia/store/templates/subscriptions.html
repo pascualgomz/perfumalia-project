@@ -1,0 +1,31 @@
+{% extends 'base.html' %} 
+{% block title %} Perfumalia Subscriptions {% endblock %} 
+
+{% block content %} 
+
+<div class="text-center"> 
+  <h1>Lista de Suscripciones</h1>
+  <ul>
+      {% for sub in subscriptions %}
+          <li>(ID:{{ sub.subscriptionID }}) - Tipo: {{ sub.subscriptionType }} 
+              <a href="{% url 'subscriptiondetails' sub.subscriptionID %}">
+                  <button>Detalles</button>
+              </a>
+              {% if sub.subscriptionStatus == 'Active' %}
+              <form action="{% url 'cancel_subscription' sub.subscriptionID %}" method="POST" style="display:inline;">
+                  {% csrf_token %}
+                  <button type="submit">Cancelar Suscripción</button>
+              </form>
+              {% endif %}
+          </li>
+      {% endfor %}
+  </ul>
+  <a href="/">
+      <button>Regresar</button>
+  </a>
+  <a href="{% url 'subscription_plans' %}">
+      <button>Suscribirse a un nuevo plan</button>
+  </a>
+</div> 
+
+{% endblock %}

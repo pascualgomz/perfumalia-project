@@ -6,7 +6,11 @@ from django.views.generic import TemplateView
 from store.models import Order, Perfume, ShoppingCart, Subscription, User
 from django.contrib.auth import logout
 from django.views import View
-from .models import CartItem
+from .models import *
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
 
 class AddToCartView(View):
@@ -94,18 +98,45 @@ class CartPageView(TemplateView):
             cart = None
         return render(request, self.template_name, {'carts': cart})
 
+@method_decorator(login_required, name='dispatch')
 class OrdersPageView(TemplateView):
     template_name = 'orders.html'
 
     def get(self, request):
-        orders = Order.objects.all()
+        orders = Order.objects.filter(userID=request.user)
         return render(request, self.template_name, {'orders': orders})
 
+
+@method_decorator(login_required, name='dispatch')
+class CompleteOrderView(View):
+    def post(self, request):
+        user = request.user
+        cart = get_object_or_404(ShoppingCart, userID=user)
+        order = Order.objects.create(
+            userID=user,
+            orderStatus='Completed'  # O el estado inicial que prefieras
+        )
+
+        for cart_item in cart.cartitem_set.all():
+            OrderItem.objects.create(
+                perfumeID=cart_item.product,
+                quantity=cart_item.quantity,
+                orderID=order,
+                totalPrice=cart_item.calcular_total()
+            )
+            cart_item.delete()
+
+        cart.update_subtotal()  # Actualiza el subtotal del carrito después de eliminar los artículos
+        return redirect('payment')
+
+
+
+@method_decorator(login_required, name='dispatch')
 class OrderDetailsPageView(TemplateView):
     template_name = 'orderdetails.html'
 
     def get(self, request, pk):
-        order = get_object_or_404(Order, pk=pk)
+        order = get_object_or_404(Order, pk=pk, userID=request.user)
         return render(request, self.template_name, {'order': order})
 
 class SearchResultsPageView(TemplateView):
@@ -115,12 +146,61 @@ class SearchResultsPageView(TemplateView):
         resultados = Perfume.objects.filter(name__icontains=query)
         return render(request, self.template_name, {'perfumes': resultados})
 
-class SubscriptionPageView(TemplateView):
-    template_name = 'subscription.html'
+@method_decorator(login_required, name='dispatch')
+class SubscriptionsPageView(TemplateView):
+    template_name = 'subscriptions.html'
 
     def get(self, request):
-        subscriptions = Subscription.objects.all()
+        subscriptions = Subscription.objects.filter(userID=request.user)
         return render(request, self.template_name, {'subscriptions': subscriptions})
 
-def index(request):
-    return render(request, 'index.html')
+class SubscriptionDetailsPageView(TemplateView):
+    template_name = 'subscriptiondetails.html'
+
+    def get(self, request, pk):
+        subscription = get_object_or_404(Subscription, pk=pk, userID=request.user)
+        return render(request, self.template_name, {'subscription': subscription})
+
+@method_decorator(login_required, name='dispatch')
+class SubscriptionPlansPageView(TemplateView):
+    template_name = 'subscriptionplans.html'
+
+    def get(self, request):
+        plans = SubscriptionPlan.objects.all()
+        return render(request, self.template_name, {'plans': plans})
+
+@method_decorator(login_required, name='dispatch')
+class SubscribeView(View):
+    def post(self, request, planID):
+        user = request.user
+        existing_subscription = Subscription.objects.filter(userID=user, subscriptionStatus='Active').first()
+        if existing_subscription:
+            # El usuario ya tiene una suscripción activa, no puede suscribirse a otra
+            return redirect('subscriptions')
+
+        plan = get_object_or_404(SubscriptionPlan, pk=planID)
+        billing_date = timezone.now().date()
+        expiration_date = billing_date + relativedelta(months=1)
+
+        subscription = Subscription.objects.create(
+            userID=user,
+            plan=plan,
+            subscriptionType=plan.name,
+            subscriptionStatus='Active',
+            billingDate=billing_date,
+            expirationDate=expiration_date
+        )
+        return redirect('subscriptiondetails', pk=subscription.subscriptionID)
+
+@method_decorator(login_required, name='dispatch')
+class CancelSubscriptionView(View):
+    def post(self, request, pk):
+        subscription = get_object_or_404(Subscription, pk=pk, userID=request.user)
+        subscription.subscriptionStatus = 'Cancelled'
+        subscription.save()
+        return redirect('subscriptions')
+
+@method_decorator(login_required, name='dispatch')
+class PaymentPageView(View):
+    def get(self, request):
+        return render(request, 'payment.html')

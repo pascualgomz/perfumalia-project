@@ -18,6 +18,10 @@
         {% endfor %}
     </ul>
     <h3>Subtotal: ${{ carts.subtotal }}</h3>
+    <form action="{% url 'complete_order' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Completar Orden</button>
+    </form>
   {% else %}
     <p>Tu carrito está vacío.</p>
   {% endif %}

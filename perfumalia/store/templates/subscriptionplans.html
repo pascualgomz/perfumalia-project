@@ -1,0 +1,26 @@
+{% extends 'base.html' %} 
+{% block title %} Planes de Suscripción {% endblock %} 
+
+{% block content %} 
+
+<div class="text-center"> 
+  <h1>Planes de Suscripción</h1>
+  <ul>
+      {% for plan in plans %}
+          <li>
+              <h3>{{ plan.name }}</h3>
+              <p>{{ plan.description }}</p>
+              <p>Precio: ${{ plan.price }}</p>
+              <form action="{% url 'subscribe' plan.planID %}" method="POST">
+                  {% csrf_token %}
+                  <button type="submit">Suscribirse a este plan</button>
+              </form>
+          </li>
+      {% endfor %}
+  </ul>
+  <a href="/">
+      <button>Regresar</button>
+  </a>
+</div> 
+
+{% endblock %}

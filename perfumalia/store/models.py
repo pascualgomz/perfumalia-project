@@ -2,6 +2,8 @@ from django.db import models, transaction
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
 
 class CustomUserManager(BaseUserManager):
@@ -224,9 +226,25 @@ class CartItem(models.Model):
         """Obtiene el precio total de un artículo."""
         return self.calcular_total()
     
+class SubscriptionPlan(models.Model):
+    planID = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
 class Subscription(models.Model):
     subscriptionID = models.AutoField(primary_key=True)
     userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, default=1)  # Define un valor por defecto
     subscriptionStatus = models.CharField(max_length=50)
     subscriptionType = models.CharField(max_length=100)
     billingDate = models.DateField()
+    expirationDate = models.DateField()
+
+    def save(self, *args, **kwargs):
+        if not self.expirationDate:
+            self.expirationDate = self.billingDate + relativedelta(months=1)
+        super().save(*args, **kwargs)
