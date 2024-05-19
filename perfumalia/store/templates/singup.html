@@ -1,14 +1,11 @@
-{% extends 'base.html' %} 
-{%  block title %} Perfumalia Sing-Up {% endblock %} 
+{% extends 'base.html' %} {% block title %} Perfumalia Sing-Up {% endblock %} {%
+block content %}
 
-{% block content %} 
-
-<div class="text-center"> 
+<div class="text-center">
   <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+    {% csrf_token %} {{ form.as_p }}
     <button type="submit">Registrarse</button>
   </form>
-</div> 
+</div>
 
-{% endblock %} 
+{% endblock %}
