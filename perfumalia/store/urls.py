@@ -15,4 +15,6 @@ urlpatterns = [
     path("user", ProfilePageView.as_view(), name='profile'),
     path("search/<str:query>/", SearchResultsPageView.as_view(), name='searchresults'),
     path("subscription", SubscriptionPageView.as_view(), name='subscription'),
+    path('logout/', LogoutView, name='logout'),
+    path('logout-success/', LogoutSuccessView, name='logout_success'),
 ]

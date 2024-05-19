@@ -4,6 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView
 from store.models import Order, Perfume, ShoppingCart, Subscription, User
+from django.contrib.auth import logout
 
 def register(request):
     if request.method == 'POST':
@@ -14,6 +15,14 @@ def register(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
+
+def LogoutView(request):
+    logout(request)
+    return redirect('logout_success')
+
+
+def LogoutSuccessView(request):
+    return render(request, 'logout.html')
 
 class UserLoginView(LoginView):
     authentication_form = UserLoginForm
