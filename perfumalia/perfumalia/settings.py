@@ -83,8 +83,12 @@ WSGI_APPLICATION = 'perfumalia.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'perfumalia',
+        'USER': 'root',
+        'PASSWORD': 'password',
+        'HOST': '34.67.115.136',
+        'PORT': '3306'
     }
 }
 
