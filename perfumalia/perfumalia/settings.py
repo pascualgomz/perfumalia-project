@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'perfumalia.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'perfumalia',
+        'NAME': 'perfumaliaproject',
         'USER': 'root',
         'PASSWORD': 'password',
         'HOST': '34.67.115.136',
