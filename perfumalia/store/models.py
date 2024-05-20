@@ -1,24 +1,50 @@
 from django.db import models, transaction
-from django.contrib.auth.models import make_password
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.utils.translation import gettext_lazy as _
+from django.conf import settings
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
-class User(models.Model):
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError(_('The Email field must be set'))
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError(_('Superuser must have is_staff=True.'))
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError(_('Superuser must have is_superuser=True.'))
+
+        return self.create_user(email, password, **extra_fields)
+
+class User(AbstractBaseUser, PermissionsMixin):
     userID = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100, unique=True)
     address = models.CharField(max_length=200)
     cellphoneNumber = models.CharField(max_length=20)
     dateOfBirth = models.DateField()
-    password = models.CharField(max_length=128) 
+    password = models.CharField(max_length=128)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
+    objects = CustomUserManager()
 
-    def save(self, *args, **kwargs):
-        # Esto asegurará que la contraseña se guarde hasheada
-        self.password = make_password(self.password)
-        super().save(*args, **kwargs)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['name', 'address', 'cellphoneNumber', 'dateOfBirth']
 
-    USERNAME_FIELD = 'email'  
-    REQUIRED_FIELDS = ['email']  
-
+    def __str__(self):
+        return self.email
 class Perfume(models.Model):
     productID = models.CharField(primary_key = True, max_length=100)
     name = models.CharField(max_length=100)
@@ -46,34 +72,11 @@ class Perfume(models.Model):
         """Calcula el precio total de una cantidad de perfumes."""
         return self.price * quantity
     
-    # def add_ingredient(self, ingredient):
-    #     """Agrega un ingrediente a los detalles de un perfume."""
-    #     self.details += f" {ingredient}"
-    #     self.save()
-
-    # def remove_ingredient(self, ingredient):
-    #     """Elimina un ingrediente de los detalles de un perfume."""
-    #     self.details = self.details.replace(ingredient, '')
-    #     self.save()
-
-    # def get_ingredient(self, index):
-    #     """Obtiene un ingrediente de los detalles de un perfume."""
-    #     return self.details.split(' ')[index]
-    
-    # def save_customization(self):
-    #     """Guarda los detalles personalizados de un perfume."""
-    #     self.customize_perfume = cus
-    #     self.save()
-
-    # def customize_perfume(self, new_details):
-    #     """Personaliza los detalles de un perfume."""
-    #     self.details = new_details
-    #     self.save()
 
 class Order(models.Model):
     orderID = models.AutoField(primary_key=True)
     orderItems = models.ManyToManyField(Perfume, through='OrderItem')
-    userID = models.ForeignKey(User, on_delete=models.CASCADE)
+    userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     orderStatus = models.CharField(max_length=50)
     orderDate = models.DateField(auto_now_add=True)
 
@@ -84,8 +87,8 @@ class OrderItem(models.Model):
     totalPrice = models.IntegerField(null = True)
 
 class ShoppingCart(models.Model):
-    userID = models.OneToOneField(User, on_delete=models.CASCADE, primary_key = True)
-    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
+    userID = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key = True)
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     savedForLater = models.JSONField(blank=True, default=list)
 
     def __str__(self):
@@ -146,8 +149,8 @@ class ShoppingCart(models.Model):
             # Devuelve el pedido para su posterior procesamiento
             return new_order
     
-class Recommendations(models.Model):
-    userID = models.OneToOneField(User, on_delete=models.CASCADE, primary_key = True)
+class Recommendation(models.Model):
+    userID = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key = True)
     purchaseHistory = models.JSONField(blank=True, default=list)
     browsingHistory = models.JSONField(blank=True, default=list)
     recommendationList = models.JSONField(blank=True, default=list)
@@ -199,7 +202,7 @@ class Recommendations(models.Model):
 class CartItem(models.Model):
     product = models.ForeignKey(Perfume, on_delete=models.CASCADE)
     shoppingCart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=1)
 
     def __str__(self):
         return str(self.product)
@@ -223,9 +226,25 @@ class CartItem(models.Model):
         """Obtiene el precio total de un artículo."""
         return self.calcular_total()
     
+class SubscriptionPlan(models.Model):
+    planID = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
 class Subscription(models.Model):
     subscriptionID = models.AutoField(primary_key=True)
-    userID = models.ForeignKey(User, on_delete=models.CASCADE)
+    userID = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, default=1)  # Define un valor por defecto
     subscriptionStatus = models.CharField(max_length=50)
     subscriptionType = models.CharField(max_length=100)
     billingDate = models.DateField()
+    expirationDate = models.DateField()
+
+    def save(self, *args, **kwargs):
+        if not self.expirationDate:
+            self.expirationDate = self.billingDate + relativedelta(months=1)
+        super().save(*args, **kwargs)

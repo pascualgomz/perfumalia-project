@@ -1,5 +1,5 @@
 import factory
-from .models import User, Perfume, Order, OrderItem, ShoppingCart, Recommendations, CartItem, Subscription
+from .models import User, Perfume, Order, OrderItem, ShoppingCart, Recommendation, CartItem, Subscription
 from django.contrib.auth.hashers import make_password
 from datetime import datetime
 
@@ -53,7 +53,7 @@ class ShoppingCartFactory(factory.django.DjangoModelFactory):
 
 class RecommendationsFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Recommendations
+        model = Recommendation
 
     userID = factory.SubFactory(UserFactory)
     purchaseHistory = {}

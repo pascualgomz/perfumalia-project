@@ -1,19 +1,25 @@
 {% extends 'base.html' %} 
-{%  block title %} Perfumalia d {% endblock %} 
+{% block title %} Perfumalia Order Details {% endblock %} 
 
 {% block content %} 
 
 <div class="text-center"> 
     <ul>
       <li><strong>OrderID:</strong> {{ order.orderID }}</li>
-      <li><strong>Items:</strong> {{ order.orderItems }}</li>
-      <li><strong>UserID:</strong> {{ order.userID }}</li>
+      <li><strong>Items:</strong> 
+          <ul>
+              {% for item in order.orderitem_set.all %}
+              <li>{{ item.perfumeID.name }} - Cantidad: {{ item.quantity }} - Precio: ${{ item.totalPrice }}</li>
+              {% endfor %}
+          </ul>
+      </li>
+      <li><strong>UserID:</strong> {{ order.userID.email }}</li>
       <li><strong>Status:</strong> {{ order.orderStatus }}</li>
       <li><strong>Date:</strong> {{ order.orderDate }}</li>
   </ul>
-  <a href="/order">
+  <a href="{% url 'orders' %}">
       <button>Regresar</button>
   </a>
 </div> 
 
-{% endblock %} 
+{% endblock %}

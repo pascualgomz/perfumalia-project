@@ -1,0 +1,19 @@
+{% extends 'base.html' %} 
+{% block title %} Detalles de la Suscripción {% endblock %} 
+
+{% block content %} 
+
+<div class="text-center"> 
+    <ul>
+      <li><strong>SubscriptionID:</strong> {{ subscription.subscriptionID }}</li>
+      <li><strong>Tipo:</strong> {{ subscription.subscriptionType }}</li>
+      <li><strong>Usuario:</strong> {{ subscription.userID.email }}</li>
+      <li><strong>Estado:</strong> {{ subscription.subscriptionStatus }}</li>
+      <li><strong>Fecha de Facturación:</strong> {{ subscription.billingDate }}</li>
+  </ul>
+  <a href="{% url 'subscriptions' %}">
+      <button>Regresar</button>
+  </a>
+</div> 
+
+{% endblock %}

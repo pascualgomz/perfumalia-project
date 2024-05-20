@@ -1,18 +1,33 @@
 {% extends 'base.html' %} 
-{%  block title %} Perfumalia Cart {% endblock %} 
+{% block title %} Perfumalia Cart {% endblock %} 
 
 {% block content %} 
 
 <div class="text-center"> 
-  <h1>Lista Carritos</h1>
-        <ul>
-            {% for cart in carts %}
-                <li>(ID:{{ cart.userID }}) - Price: ${{ cart.subtotal }}</li>
-            {% endfor %}
-        </ul>
-        <a href="/">
-            <button>Regresar</button>
-        </a>
+  <h1>Carrito de Compras</h1>
+  {% if carts %}
+    <ul>
+        {% for item in carts.cartitem_set.all %}
+            <li>
+                {{ item.product.name }} - Cantidad: {{ item.quantity }} - Precio: ${{ item.calcular_total }}
+                <form action="{% url 'remove_from_cart' item.product.productID %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Quitar</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <h3>Subtotal: ${{ carts.subtotal }}</h3>
+    <form action="{% url 'complete_order' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Completar Orden</button>
+    </form>
+  {% else %}
+    <p>Tu carrito está vacío.</p>
+  {% endif %}
+  <a href="/">
+      <button>Regresar</button>
+  </a>
 </div> 
 
-{% endblock %} 
+{% endblock %}
