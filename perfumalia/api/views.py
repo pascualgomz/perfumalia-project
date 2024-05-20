@@ -7,4 +7,4 @@ class PerfumeList(generics.ListAPIView):
 
     def get_queryset(self): 
         user = self.request.user 
-        return Perfume.objects.order_by('-name')
+        return Perfume.objects.order_by('-name')[:20]
