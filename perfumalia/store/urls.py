@@ -25,4 +25,5 @@ urlpatterns = [
     path('subscribe/<int:planID>/', SubscribeView.as_view(), name='subscribe'),
     path('subscriptionplans/', SubscriptionPlansPageView.as_view(), name='subscription_plans'),
     path('cancelsubscription/<int:pk>/', CancelSubscriptionView.as_view(), name='cancel_subscription'),
+    path("news", NewsPageView.as_view(), name='news'),
 ]
