@@ -30,7 +30,9 @@
             {% if cart_items_count > 0 %}
               <a class="nav-link active" href="{% url 'cart' %}">Ir al carrito</a> 
             {% endif %}
+            
             <a class="nav-link active" href="{% url 'orders' %}">Mis Ordenes</a>
+            <a class="nav-link active" href="{% url 'news' %}">Noticias</a>
             <a class="nav-link active" href="{% url 'subscriptions' %}">Subscripciones</a>
             <a class="nav-link active" href="{% url 'logout' %}">Cerrar Sesión</a>
             <span class="navbar-text ms-3" style="font-size: 1.25rem; color: black;">Hola, {{ user.name }}!</span>
