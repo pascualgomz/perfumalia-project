@@ -11,6 +11,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
+from newsapi import NewsApiClient
 
 
 class AddToCartView(View):
@@ -204,3 +205,13 @@ class CancelSubscriptionView(View):
 class PaymentPageView(View):
     def get(self, request):
         return render(request, 'payment.html')
+    
+class NewsPageView(View):
+    template_name = 'news.html'
+
+    def get(self, request):
+        newsapi = NewsApiClient(api_key='74f6025f04a84240829c4f89dfbd990a')
+        articles = newsapi.get_everything(q='beauty',
+                                      sort_by='relevancy',
+                                      page=2)
+        return render(request, self.template_name, {'articles': articles.get('articles', [])})
