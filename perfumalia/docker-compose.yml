@@ -9,7 +9,7 @@ services:
       - MYSQL_DATABASE='perfumaliaproject'
       - MYSQL_USER='root'
       - MYSQL_PASSWORD='password'
-      - MYSQL_HOST='34.67.115.136'
+      - MYSQL_HOST='34.31.135.181'
       - MYSQL_ROOT_PASSWORD='password'
     volumes:
       - /tmp/code/mysqld:/var/run/mysqld
