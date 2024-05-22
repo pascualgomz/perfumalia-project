@@ -10,3 +10,4 @@ requests==2.31.0
 sqlparse==0.4.3
 urllib3==1.26.16
 newsapi-python==0.2.6
+xhtml2pdf==0.2.15

@@ -13,6 +13,31 @@ from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from newsapi import NewsApiClient
 
+##################################################### Dependency Inversion
+# For PDF
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+# For Inversion
+from .services import *
+from .interfaces import *
+
+def generar_cheque(request):
+    # Usar el servicio por medio de la interfaz
+    pdf_manager = PDFManager()
+    pdf_service = PDF_Service(pdf_manager)
+
+    # Datos
+    datos = {
+        'nombre': 'Juan',
+        'direccion': 'Carrera',
+        'cel': '1234567890',
+        'total': '6',
+        'fecha': '01/01/24'
+        }
+    
+    response = pdf_service.create_Check(datos)
+    return response
 
 class AddToCartView(View):
     def post(self, request, productID):

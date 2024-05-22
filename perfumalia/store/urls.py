@@ -26,4 +26,7 @@ urlpatterns = [
     path('subscriptionplans/', SubscriptionPlansPageView.as_view(), name='subscription_plans'),
     path('cancelsubscription/<int:pk>/', CancelSubscriptionView.as_view(), name='cancel_subscription'),
     path("news", NewsPageView.as_view(), name='news'),
+
+    ###########################################################
+    path('generar_pdf/', generar_cheque, name='generar_pdf'),
 ]
