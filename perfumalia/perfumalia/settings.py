@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,6 @@ SECRET_KEY = 'django-insecure-zl!#_bg#840y!ohmam_0ogqsu&29onsg6asuc#$w86lq4*cjcs
 DEBUG = True
 
 ALLOWED_HOSTS = ['35.184.212.245','34.28.252.155','35.192.172.59', '127.0.0.1', 'localhost', '0.0.0.0', '[::1]']
-
 
 # Application definition
 
@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'perfumalia.urls'
@@ -70,6 +71,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'store.contextProcessors.cart_items_count',
+                'store.context_processor.current_template',
             ],
         },
     },
@@ -115,13 +117,26 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
+USE_L10N = True
 
 USE_TZ = True
+
+LANGUAGES = [
+    ('es', _('Spanish')),
+    ('en', _('English')),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'store/locale', 
+]
+
+print("BASEDIR")
+print(BASE_DIR / 'store/locale')
 
 
 # Static files (CSS, JavaScript, Images)
