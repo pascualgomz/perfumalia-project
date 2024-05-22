@@ -24,8 +24,12 @@
     </form>
     <form action="{% url 'generar_pdf' %}" method="GET">
       {% csrf_token %}
-      <button type="submit">Generar Cheque de Pago</button>
-  </form>
+      <button type="submit">Generar Cheque PDF</button>
+    </form>
+    <form action="{% url 'generar_html' %}" method="GET">
+        {% csrf_token %}
+        <button type="submit">Generar Cheque HTML</button>
+    </form>
   {% else %}
     <p>Tu carrito está vacío.</p>
   {% endif %}

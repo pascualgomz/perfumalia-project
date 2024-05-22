@@ -1,8 +1,8 @@
-from .interfaces import I_PDFManager
+from .interfaces import I_HTMLManager
 from django.template.loader import get_template
 
-class PDF_Service:
-    def __init__(self, pdf_manager: I_PDFManager):
+class HTML_Service:
+    def __init__(self, pdf_manager: I_HTMLManager):
         self.pdf_manager = pdf_manager
 
     def create_Check(self, datos: str):
@@ -11,5 +11,5 @@ class PDF_Service:
         template = get_template(template_path)
         html = template.render(datos)
 
-        response = self.pdf_manager.create_pdf_from_html(html)
+        response = self.pdf_manager.transform_html(html)
         return response
