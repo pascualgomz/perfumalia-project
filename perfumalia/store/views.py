@@ -12,6 +12,42 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from newsapi import NewsApiClient
+import requests
+
+hotwheels_data = [
+    {
+        "id": 10,
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbmEYptj8wTPvi4tkwTrYSkN_nCzCw63-y7uUCHM9oVA&s",
+        "auction": [
+            {
+                "start_time": "2024-05-20T20:07:28.635300Z",
+                "end_time": "2024-05-27T20:07:28.635300Z",
+                "status": "upcoming",
+                "starting_bid": "10.00",
+                "user": 1
+            }
+        ],
+        "model_name": "Twin Mill",
+        "year_released": 1969,
+        "color": "Red"
+    },
+    {
+        "id": 11,
+        "image": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Hot_Wheels_Real_Life_Bone_Shaker.jpg",
+        "auction": [
+            {
+                "start_time": "2024-05-20T20:07:28.641297Z",
+                "end_time": "2024-05-27T20:07:28.641297Z",
+                "status": "upcoming",
+                "starting_bid": "10.00",
+                "user": 1
+            }
+        ],
+        "model_name": "Bone Shaker",
+        "year_released": 2006,
+        "color": "Black"
+    }
+] 
 
 
 class AddToCartView(View):
@@ -215,3 +251,12 @@ class NewsPageView(View):
                                       sort_by='relevancy',
                                       page=2)
         return render(request, self.template_name, {'articles': articles.get('articles', [])})
+    
+class HotWheelsPageView(View):
+    template_name = 'hotwheels.html'
+
+    def get(self, request):
+        url = "https://example.com/api/hotwheels/"
+        #hotwheels_data = requests.get(url)
+
+        return render(request, self.template_name, {'hotwheels_data': hotwheels_data})

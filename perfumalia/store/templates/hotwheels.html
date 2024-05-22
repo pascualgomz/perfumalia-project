@@ -1,0 +1,60 @@
+{% extends 'base.html' %} 
+{% block title %} Perfumalia {% endblock %} 
+
+{% block content %} 
+
+<div class="text-center"> 
+  <h1>Hotwheels</h1>
+  <div class="grid-container">
+    {% for item in hotwheels_data %}
+
+      <div class="grid-item">
+          <h2>{{ item.model_name }}</h2>
+          <img src="{{ item.image }}" alt="{{ item.model_name }}" width="300" height="200">
+          <p>Color: {{ item.color }}</p>
+          <p>Año de lanzamiento: {{ item.year_released }}</p>
+          <!--<p><a href="https://example.com/api/hotwheels/{{ item.url }}">Leer más</a></p>-->
+      </div>
+    {% endfor %}
+</div>
+  <a href="/">
+      <button>Regresar</button>
+  </a>
+</div> 
+
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .grid-item {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .grid-item img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .grid-item h2 {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .grid-item p {
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+
+    .grid-item a {
+        font-size: 12px;
+    }
+</style>
+
+
+{% endblock %}
+
