@@ -29,17 +29,15 @@
           {% if user.is_authenticated %}
             <a class="nav-link active" href="{% url 'perfumes' %}">Perfumes</a> 
             {% if cart_items_count > 0 %}
-              <a class="nav-link active" href="{% url 'cart' %}">Ir al carrito</a> 
+              <a class="nav-link active" href="{% url 'cart' %}">{% trans "Cart" %}</a> 
             {% endif %}
-            
-            <a class="nav-link active" href="{% url 'orders' %}">Mis Ordenes</a>
-            <a class="nav-link active" href="{% url 'news' %}">Noticias</a>
-            <a class="nav-link active" href="{% url 'subscriptions' %}">Subscripciones</a>
-            <a class="nav-link active" href="{% url 'logout' %}">Cerrar Sesión</a>
-            <span class="navbar-text ms-3" style="font-size: 1.25rem; color: black;">Hola, {{ user.name }}!</span>
+            <a class="nav-link active" href="{% url 'orders' %}">{% trans "Orders" %}</a>
+            <a class="nav-link active" href="{% url 'subscriptions' %}">{% trans "Subscriptions" %}</a>
+            <a class="nav-link active" href="{% url 'logout' %}">{% trans "Log out" %}</a>
+            <span class="navbar-text ms-3" style="font-size: 1.25rem; color: black;">{% trans "Greeting" %}{{ user.name }}</span>
           {% else %}
-            <a class="nav-link active" href="{% url 'login' %}">Inicia Sesion</a>
-            <a class="nav-link active" href="{% url 'register' %}">Registrate</a>
+            <a class="nav-link active" href="{% url 'login' %}">{% trans "Login" %}</a>
+            <a class="nav-link active" href="{% url 'register' %}">{% trans "Sign Up" %}</a>
           {% endif %}
 
           <form action="{% url 'set_language' %}" method="post">

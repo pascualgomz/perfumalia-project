@@ -23,3 +23,36 @@ msgstr ""
 #: templates/news.html:8
 msgid "Beauty news"
 msgstr "Noticias de belleza"
+
+#: templates/base.html:32
+msgid "Cart"
+msgstr "Carrito de Compras"
+
+#: templates/base.html:34
+msgid "Orders"
+msgstr "Mis Ordenes"
+
+#: templates/base.html:35
+msgid "Subscriptions"
+msgstr "Subscripciones"
+
+#: templates/base.html:36
+msgid "Log out"
+msgstr "Cerrar Sesión"
+
+#: templates/base.html:37
+msgid "Greeting"
+msgstr "Hola, "
+
+#: templates/base.html:39
+msgid "Login"
+msgstr "Inicia Sesión"
+
+#: templates/base.html:34
+msgid "Sign Up"
+msgstr "Registrarse"
+
+#: templates/base.html:64
+msgid "Welcome"
+msgstr "¡Bienvenido!"
+
