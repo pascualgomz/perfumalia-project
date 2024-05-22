@@ -25,13 +25,13 @@ from django.utils.timezone import now
 from .services import *
 from .interfaces import *
 
-def generar_cheque(request):
+def generar_cheque_pdf(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
     # Usar el servicio por medio de la interfaz
     pdf_manager = PDFManager()
-    pdf_service = PDF_Service(pdf_manager)
+    pdf_service = HTML_Service(pdf_manager)
 
     # Datos
     # Obtener el usuario actual
@@ -53,6 +53,35 @@ def generar_cheque(request):
     
     response = pdf_service.create_Check(datos)
     return response
+
+def generar_cheque_html(request):
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+    
+    html_manager = HTMLManager()
+    pdf_service = HTML_Service(html_manager)
+
+    # Datos
+    # Obtener el usuario actual
+    user = request.user
+    # Obtener el carrito de compras asociado al usuario actual
+    try:
+        cart = ShoppingCart.objects.get(userID=user)
+    except ShoppingCart.DoesNotExist:
+        return HttpResponse("No se encontró un carrito de compras para el usuario actual.", status=404)
+    
+    # Datos
+    datos = {
+        'nombre': user.name,
+        'direccion': user.address,
+        'cel': user.cellphoneNumber,
+        'total': cart.subtotal,
+        'fecha': now().strftime('%d/%m/%y')
+    }
+    
+    response = pdf_service.create_Check(datos)
+    return response
+
 class AddToCartView(View):
     def post(self, request, productID):
         perfume = get_object_or_404(Perfume, productID=productID)
