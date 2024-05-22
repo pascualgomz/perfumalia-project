@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import *
-
+from django.conf.urls.i18n import i18n_patterns
+from django.conf.urls.i18n import set_language
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -29,4 +30,5 @@ urlpatterns = [
     path('generar_pdf/', generar_cheque_pdf, name='generar_pdf'),
     path('generar_html/', generar_cheque_html, name='generar_html'),
     path("hotwheels", HotWheelsPageView.as_view(), name='hotwheels'),
+    path('set_language/', set_language, name='set_language'),
 ]
