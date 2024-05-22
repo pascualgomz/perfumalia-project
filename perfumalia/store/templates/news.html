@@ -1,10 +1,11 @@
 {% extends 'base.html' %} 
+{% load i18n %}
 {% block title %} Perfumalia {% endblock %} 
 
 {% block content %} 
 
-<div class="text-center"> 
-  <h1>Noitcias de Belleza</h1>
+<div class="text-center">
+  <h1>{% trans "Beauty news" %}</h1>
   <div class="grid-container">
     {% for article in articles %}
 

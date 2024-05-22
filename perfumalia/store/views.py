@@ -12,42 +12,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from newsapi import NewsApiClient
+from django.utils.translation import gettext as _
 import requests
-
-hotwheels_data = [
-    {
-        "id": 10,
-        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbmEYptj8wTPvi4tkwTrYSkN_nCzCw63-y7uUCHM9oVA&s",
-        "auction": [
-            {
-                "start_time": "2024-05-20T20:07:28.635300Z",
-                "end_time": "2024-05-27T20:07:28.635300Z",
-                "status": "upcoming",
-                "starting_bid": "10.00",
-                "user": 1
-            }
-        ],
-        "model_name": "Twin Mill",
-        "year_released": 1969,
-        "color": "Red"
-    },
-    {
-        "id": 11,
-        "image": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Hot_Wheels_Real_Life_Bone_Shaker.jpg",
-        "auction": [
-            {
-                "start_time": "2024-05-20T20:07:28.641297Z",
-                "end_time": "2024-05-27T20:07:28.641297Z",
-                "status": "upcoming",
-                "starting_bid": "10.00",
-                "user": 1
-            }
-        ],
-        "model_name": "Bone Shaker",
-        "year_released": 2006,
-        "color": "Black"
-    }
-] 
 
 ##################################################### Dependency Inversion
 # For PDF
@@ -87,7 +53,6 @@ def generar_cheque(request):
     
     response = pdf_service.create_Check(datos)
     return response
-
 class AddToCartView(View):
     def post(self, request, productID):
         perfume = get_object_or_404(Perfume, productID=productID)
@@ -294,7 +259,9 @@ class HotWheelsPageView(View):
     template_name = 'hotwheels.html'
 
     def get(self, request):
-        url = "https://example.com/api/hotwheels/"
-        #hotwheels_data = requests.get(url)
+        url = "http://rollingdeals.chickenkiller.com/api/hotwheels/?format=json"
+        response = requests.get(url)
+        if response.status_code == 200:
+            hotwheels_data = response.json()
 
         return render(request, self.template_name, {'hotwheels_data': hotwheels_data})
