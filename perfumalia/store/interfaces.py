@@ -12,7 +12,7 @@ class PDFManager(I_PDFManager):
     def create_pdf_from_html(self, html):
         # Crea un objeto HttpResponse con el contenido PDF
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="ejemplo.pdf"'
+        response['Content-Disposition'] = 'attachment; filename="cheque_de_pago.pdf"'
 
         # Convierte el HTML a PDF
         pisa_status = pisa.CreatePDF(html, dest=response)
