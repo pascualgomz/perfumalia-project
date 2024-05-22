@@ -1,9 +1,9 @@
-{% extends 'base.html' %} 
-{% block title %} Perfumalia Cart {% endblock %} 
+{% extends 'base.html' %}
+{% block title %} Perfumalia Cart {% endblock %}
 
-{% block content %} 
+{% block content %}
 
-<div class="text-center"> 
+<div class="text-center">
   <h1>Carrito de Compras</h1>
   {% if carts %}
     <ul>
@@ -22,16 +22,12 @@
         {% csrf_token %}
         <button type="submit">Completar Orden</button>
     </form>
-    <form action="{% url 'generar_pdf' %}" method="GET">
-      {% csrf_token %}
-      <button type="submit">Generar Cheque de Pago</button>
-  </form>
   {% else %}
     <p>Tu carrito está vacío.</p>
   {% endif %}
   <a href="/">
       <button>Regresar</button>
   </a>
-</div> 
+</div>
 
 {% endblock %}

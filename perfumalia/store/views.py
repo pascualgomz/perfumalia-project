@@ -183,26 +183,50 @@ class OrdersPageView(TemplateView):
 
 
 @method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class CompleteOrderView(View):
     def post(self, request):
         user = request.user
         cart = get_object_or_404(ShoppingCart, userID=user)
+        
         order = Order.objects.create(
             userID=user,
             orderStatus='Completed'  # O el estado inicial que prefieras
         )
 
+        total_order_price = 0
+
         for cart_item in cart.cartitem_set.all():
+            total_price = cart_item.calcular_total()
             OrderItem.objects.create(
                 perfumeID=cart_item.product,
                 quantity=cart_item.quantity,
                 orderID=order,
-                totalPrice=cart_item.calcular_total()
+                totalPrice=total_price
             )
+            total_order_price += total_price
             cart_item.delete()
 
+        order.total = total_order_price
+        order.save()
+
         cart.update_subtotal()  # Actualiza el subtotal del carrito después de eliminar los artículos
-        return redirect('payment')
+
+        # Generar el cheque de pago como PDF
+        pdf_manager = PDFManager()  # Instancia de PDFManager
+        pdf_service = PDF_Service(pdf_manager)
+
+        # Datos para el cheque
+        datos = {
+            'nombre': user.name,
+            'direccion': user.address,
+            'cel': user.cellphoneNumber,
+            'total': total_order_price,
+            'fecha': now().strftime('%d/%m/%y')
+        }
+        
+        response = pdf_service.create_Check(datos)
+        return response
 
 
 
