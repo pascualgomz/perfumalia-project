@@ -15,6 +15,44 @@ from newsapi import NewsApiClient
 from django.utils.translation import gettext as _
 import requests
 
+##################################################### Dependency Inversion
+# For PDF
+from django.http import HttpResponse, HttpResponseNotAllowed
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from django.utils.timezone import now
+# For Inversion
+from .services import *
+from .interfaces import *
+
+def generar_cheque(request):
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+
+    # Usar el servicio por medio de la interfaz
+    pdf_manager = PDFManager()
+    pdf_service = PDF_Service(pdf_manager)
+
+    # Datos
+    # Obtener el usuario actual
+    user = request.user
+    # Obtener el carrito de compras asociado al usuario actual
+    try:
+        cart = ShoppingCart.objects.get(userID=user)
+    except ShoppingCart.DoesNotExist:
+        return HttpResponse("No se encontró un carrito de compras para el usuario actual.", status=404)
+    
+    # Datos
+    datos = {
+        'nombre': user.name,
+        'direccion': user.address,
+        'cel': user.cellphoneNumber,
+        'total': cart.subtotal,
+        'fecha': now().strftime('%d/%m/%y')
+    }
+    
+    response = pdf_service.create_Check(datos)
+    return response
 class AddToCartView(View):
     def post(self, request, productID):
         perfume = get_object_or_404(Perfume, productID=productID)
